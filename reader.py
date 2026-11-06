@@ -23,7 +23,7 @@ import serial.tools.list_ports
 
 
 # ==============================================================================
-# MANAJEMEN KONFIGURASI (config.json)
+# MANAJEMEN KONFIGURASI & LOGGING
 # ==============================================================================
 if getattr(sys, "frozen", False):
     BASE_DIR = os.path.dirname(sys.executable)
@@ -31,6 +31,21 @@ else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
+LOG_FILE = os.path.join(BASE_DIR, "rfid_scanner.log")
+
+def log(msg: str):
+    """Mencetak ke console (jika ada) dan menulis ke file rfid_scanner.log"""
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    line = f"[{timestamp}] {msg}"
+    try:
+        print(line)
+    except Exception:
+        pass
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    except Exception:
+        pass
 DEFAULT_CONFIG = {
     "port": "AUTO",              # "AUTO" atau nama port seperti "COM3"
     "baudrate": 57600,           # Baudrate bawaan HW-VX6336
@@ -372,22 +387,77 @@ def run_simulation(scan_interval: float):
         print("\n[INFO] Mode simulasi dihentikan.")
 
 
+def is_headless() -> bool:
+    """Mengecek apakah aplikasi berjalan di latar belakang (tanpa terminal interaktif)"""
+    return not sys.stdin or not hasattr(sys.stdin, "isatty") or not sys.stdin.isatty()
+
+
 # ==============================================================================
 # PROGRAM UTAMA (WAREHOUSE KEYBOARD WEDGE)
 # ==============================================================================
 def main():
-    print("=" * 72)
-    print("   RFID KEYBOARD WEDGE - ELECTRON HW-VX6336 (GUDANG MASUK & KELUAR)")
-    print("=" * 72)
+    log("====================================================================")
+    log("   RFID KEYBOARD WEDGE - ELECTRON HW-VX6336 (GUDANG MASUK & KELUAR)")
+    log("====================================================================")
 
     # Cek apakah dijalankan dengan flag --simulate
     if "--simulate" in sys.argv or "-s" in sys.argv:
         run_simulation(SCAN_INTERVAL_SEC)
         return
 
-    selected_port = None
     config_port = CONFIG.get("port", "AUTO").upper()
+    scan_counter = 0
 
+    # MODE BACKGROUND (HEADLESS)
+    if is_headless():
+        log("[INFO] Menjalankan dalam Background Mode (tanpa jendela console).")
+        while True:
+            available_ports = list_serial_ports()
+            selected_port = None
+
+            if config_port != "AUTO" and config_port in available_ports:
+                selected_port = config_port
+            elif available_ports:
+                selected_port = available_ports[0]
+
+            if not selected_port:
+                log("[WAIT] Menunggu USB RFID HW-VX6336 terhubung...")
+                time.sleep(3)
+                continue
+
+            reader = HWVX6336Reader(port=selected_port, baudrate=BAUDRATE)
+            log(f"[INFO] Mencoba menghubungkan ke {selected_port}...")
+            if not reader.connect():
+                time.sleep(3)
+                continue
+
+            log(f"[SUCCESS] Terhubung ke {selected_port}! Reader siap di background.")
+            if CONFIG.get("beep_on_success", True):
+                reader.beep(times=1, active_ms=80)
+
+            # Loop scan di background dengan auto-recovery
+            try:
+                while True:
+                    tags = reader.inventory()
+                    if tags:
+                        current_epc = tags[0]
+                        scan_counter += 1
+
+                        if CONFIG.get("beep_on_success", True):
+                            reader.beep(times=1, active_ms=60)
+
+                        pasted, status_msg = auto_paste_replace(current_epc)
+                        status_icon = "OK" if pasted else "CLIPBOARD"
+                        log(f"[SCAN #{scan_counter} - {status_icon}] EPC: {current_epc} -> {status_msg}")
+                        time.sleep(SCAN_INTERVAL_SEC)
+                    else:
+                        time.sleep(0.2)
+            except Exception as e:
+                log(f"[WARN] Koneksi terputus ({e}), mencoba menghubungkan ulang...")
+                reader.disconnect()
+                time.sleep(2)
+
+    # MODE INTERAKTIF (TERMINAL / CMD)
     available_ports = list_serial_ports()
     if not available_ports:
         print("[!] Tidak ada COM port fisik yang terdeteksi.")
@@ -446,33 +516,25 @@ def main():
     print("  * Tekan Ctrl+C untuk berhenti.")
     print("-" * 72 + "\n")
 
-    scan_counter = 0
-
     try:
         while True:
             tags = reader.inventory()
             waktu = time.strftime("%H:%M:%S")
 
             if tags:
-                # Ambil tag yang terdeteksi
                 current_epc = tags[0]
                 scan_counter += 1
 
-                # Bunyikan buzzer
                 if CONFIG.get("beep_on_success", True):
                     reader.beep(times=1, active_ms=60)
 
-                # Paste ke input web
                 pasted, status_msg = auto_paste_replace(current_epc)
                 status_icon = "OK" if pasted else "CLIPBOARD"
                 print(f"[{waktu}] [SCAN #{scan_counter} - {status_icon}] EPC: {current_epc}")
                 print(f"           -> {status_msg}")
-
-                # Delay setelah berhasil scan sebelum bisa scan lagi
                 print(f"[{waktu}] Menunggu jeda {SCAN_INTERVAL_SEC:.0f} detik...\n")
                 time.sleep(SCAN_INTERVAL_SEC)
             else:
-                # Saat tidak ada kartu, cek secara cepat (0.2 detik) agar responsif saat kartu ditempelkan
                 time.sleep(0.2)
 
     except KeyboardInterrupt:

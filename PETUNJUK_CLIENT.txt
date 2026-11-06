@@ -18,9 +18,10 @@ B. CARA PENGGUNAAN SEHARI-HARI
 ------------------------------------------------------------------------
 1. Pastikan kabel USB Reader terpasang ke komputer.
 2. Buka aplikasi dengan klik 2x icon "RFID Scanner" di Desktop.
-   (Jika sudah mengaktifkan fitur startup, aplikasi akan langsung aktif sendiri).
+   - Aplikasi akan langsung berjalan di LATAR BELAKANG (tanpa jendela hitam CMD yang mengganggu).
+   - Reader akan berbunyi BEEP 1x tanda perangkat siap digunakan.
 3. Buka browser dan buka halaman website sistem:
-   - Contoh: Halaman "Input Barang Keluar" atau "Input RFID Produk".
+   - Contoh: Halaman "Input Barang Keluar" atau "Input RFID Produk" (rfid.moko.ai.id).
 4. Klik SATU KALI pada kotak input "TAG RFID" (Paste RFID hex).
 5. Tempelkan kartu / tag RFID ke atas reader:
    - Reader akan berbunyi BEEP 1x.
@@ -28,6 +29,14 @@ B. CARA PENGGUNAAN SEHARI-HARI
    - Detail barang di sebelah kanan website akan langsung muncul.
 6. Periksa detail barang di web, lalu klik tombol "Simpan".
 7. Ganti / scan barang berikutnya (ada jeda 5 detik antar pembacaan).
+
+------------------------------------------------------------------------
+C. CARA MENGECEK STATUS & MEMATIKAN APLIKASI
+------------------------------------------------------------------------
+Karena aplikasi berjalan di latar belakang (tanpa jendela), telah disediakan:
+- "Status_RFID.bat"  : Klik 2x untuk mengecek apakah scanner sedang aktif/berjalan.
+- "Matikan_RFID.bat" : Klik 2x untuk mematikan scanner di latar belakang.
+- Log Aktivitas      : Riwayat pembacaan tersimpan otomatis di file "rfid_scanner.log".
 
 ------------------------------------------------------------------------
 C. CARA MENGUBAH PENGATURAN (config.json)
