@@ -74,3 +74,4 @@ echo Anda sekarang bisa langsung membuka aplikasi melalui icon
 echo 'RFID Scanner' yang ada di Desktop komputer Anda.
 echo.
 pause
+
