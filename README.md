@@ -18,11 +18,16 @@ Program integrasi pembaca **UHF RFID Electron HW-VX6336** (ISO18000-6C / EPC Gen
 ## Struktur File
 
 ```text
-├── reader.py          # Program utama Python (Keyboard Wedge)
-├── reader.js          # Program alternatif Node.js / Electron
-├── Jalankan_RFID.bat  # Shortcut klik-dua-kali untuk menjalankan di Windows
-├── config.json        # File pengaturan konfigurasi aplikasi
-└── docs/              # Dokumentasi & Panduan Protokol HW-VX6336
+├── reader.py               # Program utama Python (Keyboard Wedge)
+├── writer.py               # Program penulisan / encode EPC tag UHF
+├── reader.js               # Program alternatif Node.js / Electron
+├── Jalankan_RFID.bat       # Shortcut klik-dua-kali untuk menjalankan scanner
+├── Jalankan_RFID_Silent.vbs# Menjalankan scanner di latar belakang (tanpa jendela CMD)
+├── Pasang_Startup.bat      # Pasang aplikasi ke startup otomatis Windows
+├── Hapus_Startup.bat       # Hapus aplikasi dari startup Windows
+├── setup_startup.py        # Logika konfigurasi shortcut Windows Startup
+├── config.json             # File pengaturan konfigurasi aplikasi
+└── docs/                   # Dokumentasi & Panduan Protokol HW-VX6336
 ```
 
 ---
@@ -60,6 +65,26 @@ Program integrasi pembaca **UHF RFID Electron HW-VX6336** (ISO18000-6C / EPC Gen
    ```bash
    node reader.js
    ```
+
+---
+
+## Menjalankan Otomatis Saat Windows Dinyalakan (Startup)
+
+1. Cukup klik 2x file **`Pasang_Startup.bat`**.
+2. Pilih mode yang diinginkan:
+   - **Mode [1] (Direkomendasikan)**: Menampilkan jendela Command Prompt sehingga operator bisa melihat status kartu yang di-scan.
+   - **Mode [2] (Silent)**: Berjalan di latar belakang tanpa jendela Command Prompt (notifikasi hanya lewat suara buzzer).
+3. Untuk mematikan fitur startup sewaktu-waktu, klik 2x file **`Hapus_Startup.bat`**.
+
+---
+
+## Fitur Penulisan Tag (Encode EPC)
+
+Untuk menulis atau mengganti nomor EPC tag UHF RFID baru:
+```bash
+python writer.py
+```
+Ikuti panduan di layar untuk membaca tag saat ini dan memasukkan nomor EPC baru.
 
 ---
 
