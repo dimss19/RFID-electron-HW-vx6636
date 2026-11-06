@@ -82,3 +82,4 @@ Program integrasi pembaca **UHF RFID Electron HW-VX6336** (ISO18000-6C / EPC Gen
 - **Hardware**: Electron HW-VX6336 Desktop UHF RFID Reader/Writer (902–928 MHz)
 - **Komunikasi**: USB Virtual Serial Port (Default Baudrate: 57600, 8N1)
 - **Protokol**: ISO18000-6C (EPC Class 1 Gen 2)
+
