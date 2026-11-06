@@ -1,0 +1,48 @@
+========================================================================
+             PANDUAN PENGGUNAAN RFID SCANNER HW-VX6336
+========================================================================
+
+Aplikasi ini berfungsi untuk membaca kartu / tag UHF RFID dan otomatis
+mengetikkan kodenya ke halaman website sistem gudang (rfid.moko.ai.id).
+
+------------------------------------------------------------------------
+A. CARA INSTALASI / SETUP PERTAMA KALI
+------------------------------------------------------------------------
+1. Hubungkan kabel USB Reader RFID ke komputer/laptop.
+2. Klik 2x file "SETUP_CLIENT.bat".
+3. Ikuti petunjuk di layar (akan otomatis membuat icon "RFID Scanner" di Desktop).
+4. Selesai!
+
+------------------------------------------------------------------------
+B. CARA PENGGUNAAN SEHARI-HARI
+------------------------------------------------------------------------
+1. Pastikan kabel USB Reader terpasang ke komputer.
+2. Buka aplikasi dengan klik 2x icon "RFID Scanner" di Desktop.
+   (Jika sudah mengaktifkan fitur startup, aplikasi akan langsung aktif sendiri).
+3. Buka browser dan buka halaman website sistem:
+   - Contoh: Halaman "Input Barang Keluar" atau "Input RFID Produk".
+4. Klik SATU KALI pada kotak input "TAG RFID" (Paste RFID hex).
+5. Tempelkan kartu / tag RFID ke atas reader:
+   - Reader akan berbunyi BEEP 1x.
+   - Angka RFID otomatis ter-paste ke kotak input web.
+   - Detail barang di sebelah kanan website akan langsung muncul.
+6. Periksa detail barang di web, lalu klik tombol "Simpan".
+7. Ganti / scan barang berikutnya (ada jeda 5 detik antar pembacaan).
+
+------------------------------------------------------------------------
+C. CARA MENGUBAH PENGATURAN (config.json)
+------------------------------------------------------------------------
+Buka file "config.json" menggunakan Notepad jika ingin mengubah:
+- "scan_interval_sec": 5.0    -> Jeda waktu antar scan (detik).
+- "press_enter_after_paste": false -> Ubah ke true jika ingin otomatis tekan Enter.
+- "beep_on_success": true    -> Aktifkan/matikan bunyi buzzer reader.
+
+------------------------------------------------------------------------
+D. KENDALA UMUM (TROUBLESHOOTING)
+------------------------------------------------------------------------
+1. "Tidak ada COM port yang terdeteksi":
+   - Cabut kabel USB reader lalu pasang kembali ke port USB lain.
+   - Pastikan lampu indikator pada alat reader menyala.
+2. Kode RFID tidak masuk ke kotak input web:
+   - Pastikan kursor Anda sedang aktif/mengklik di dalam kotak "TAG RFID".
+========================================================================

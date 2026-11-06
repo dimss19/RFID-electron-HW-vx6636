@@ -6,3 +6,4 @@ scriptDir = fso.GetParentFolderName(WScript.ScriptFullName)
 WshShell.CurrentDirectory = scriptDir
 ' Angka 0 = tersembunyi / hidden (berjalan di background tanpa jendela CMD)
 WshShell.Run "python reader.py", 0, False
+

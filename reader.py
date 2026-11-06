@@ -25,7 +25,12 @@ import serial.tools.list_ports
 # ==============================================================================
 # MANAJEMEN KONFIGURASI (config.json)
 # ==============================================================================
-CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+if getattr(sys, "frozen", False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 DEFAULT_CONFIG = {
     "port": "AUTO",              # "AUTO" atau nama port seperti "COM3"
     "baudrate": 57600,           # Baudrate bawaan HW-VX6336

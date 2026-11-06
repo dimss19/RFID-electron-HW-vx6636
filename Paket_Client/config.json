@@ -1,0 +1,8 @@
+{
+    "port": "AUTO",
+    "baudrate": 57600,
+    "scan_interval_sec": 5.0,
+    "press_enter_after_paste": false,
+    "beep_on_success": true,
+    "alert_sound_on_multi": true
+}
